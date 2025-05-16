@@ -1,35 +1,15 @@
-name: Clean Moodle Calendar
+name: Test Moodle URL Access
 
 on:
-  schedule:
-    - cron: '0 6 * * *'  # Daily at 6:00 AM UTC
   workflow_dispatch:
 
 jobs:
-  clean:
+  test-access:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Curl Moodle URL
+        env:
+          ICAL_URL: ${{ secrets.ICAL_URL }}
+        run: |
+          curl -v --max-time 15 "$ICAL_URL" || echo "Request failed or timed out"
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      run: pip install icalendar requests
-
-    - name: Run the script
-      env:
-        ICAL_URL: ${{ secrets.ICAL_URL }}
-      run: python clean_moodle_calendar.py
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        publish_branch: gh-pages
-        keep_files: true
