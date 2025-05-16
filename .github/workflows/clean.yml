@@ -2,7 +2,7 @@ name: Clean Moodle Calendar
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Daily at 6:00 AM UTC
+    - cron: '0 6 * * *'  # Daily at 06:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -19,9 +19,9 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install icalendar requests
+      run: pip install requests icalendar
 
-    - name: Run the script
+    - name: Run calendar cleanup script
       env:
         ICAL_URL: ${{ secrets.ICAL_URL }}
       run: python clean_moodle_calendar.py
